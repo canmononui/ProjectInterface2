@@ -1,0 +1,41 @@
+C51 COMPILER V8.08   TEST2                                                                 02/08/2017 03:25:27 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE TEST2
+OBJECT MODULE PLACED IN Test2.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE Test2.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include<reg51.h>
+   2          sbit servo=P3^5;
+   3          void open_gate(void);
+   4          void close_gate(void);
+   5          void timer(unsigned int msec);
+   6          void main()
+   7          {
+   8   1       unsigned int i;
+   9   1       servo=0;
+  10   1      //clockwise direction
+  11   1                      for(i=0;i<1;i++)
+  12   1                      {
+  13   2                              servo=1;
+  14   2                              timer(50);
+  15   2                              servo=0;
+  16   2                              timer(340);
+  17   2                      }
+  18   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     43    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

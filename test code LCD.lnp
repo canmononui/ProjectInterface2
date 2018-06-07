@@ -1,0 +1,4 @@
+"C:\Project Interface\STARTUP.obj",
+"C:\Project Interface\LCD.obj" 
+TO "C:\Project Interface\test code LCD" 
+PRINT(".\test code LCD.m51") RAMSIZE(256) 

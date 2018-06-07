@@ -1,0 +1,119 @@
+C51 COMPILER V8.08   KEYPAD_TEST                                                           02/21/2017 04:07:47 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE KEYPAD_TEST
+OBJECT MODULE PLACED IN keypad_test.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE keypad_test.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1           //----- reading the char/number from the keyboard----//
+   2          #include<reg51.h>
+   3          #define ROW P1      // assigning  Port1 to ROW
+   4          #define COL P2       // assigning port2 to COL
+   5          void msdelay(unsigned int value);
+   6          void sertx(unsigned char );
+   7          unsigned char dat[4][3]={'0','1','2','3',    // keypad read data
+   8                                    '4','5','6','7',
+   9                                     '8','9','A','B'};
+  10          void main()
+  11          {
+  12   1       unsigned char colloc,rowloc; // initializing column and row locations
+  13   1       TMOD=0x20;               // timer -2 mode-2
+  14   1       TH1=0xFD;                 // preset FD 
+  15   1       SCON=0x50;              // serial control reg. 9600 baudrate
+  16   1       TR1=1;                      // timer-1 start
+  17   1       COL=0xFF;               // make column pins input
+  18   1       while(1)
+  19   1       {
+  20   2         do
+  21   2         {
+  22   3          ROW=0x00;      // write "00000000" to ROW   
+  23   3             colloc=COL;  // read column input
+  24   3          colloc&=0x0F;  // hide higher nibble
+  25   3          }while(colloc!=0x0f); //check whether any change in column pins
+  26   2          do
+  27   2          {
+  28   3           do
+  29   3           {
+  30   4            msdelay(20);
+  31   4            colloc=COL;
+  32   4            colloc&=0x0F;
+  33   4            }while(colloc==0x0F);
+  34   3            msdelay(20);                  // check column after 20ms
+  35   3            colloc=COL;                  // it is for accuracy if there is any random spike it can ignore
+  36   3            colloc&=0x0F;
+  37   3            }while(colloc==0x0F);
+  38   2          while(1)
+  39   2          {
+  40   3           ROW=0xFE;         // write "1111_1110" on to ROW
+  41   3           colloc=COL;
+  42   3           colloc&=0x0F;
+  43   3           if(colloc!=0x0F)  // if there is a change in column/button pressed
+  44   3           {  
+  45   4            rowloc=0;           
+  46   4             break;
+  47   4            }
+  48   3            ROW=0xFD;  // writing "1111_1101" onto the ROW
+  49   3            colloc=COL;
+  50   3            colloc&=0x0F;
+  51   3            if(colloc!=0x0F)  // if there is a change in column/button pressed
+  52   3             {
+  53   4              rowloc=1;
+  54   4              break;
+  55   4              }
+C51 COMPILER V8.08   KEYPAD_TEST                                                           02/21/2017 04:07:47 PAGE 2   
+
+  56   3            ROW=0xFB;   // writing "1111_1011" onto the ROW 
+  57   3            colloc=COL;
+  58   3            colloc&=0x0F;
+  59   3            if(colloc!=0x0F)  // if button pressed / change in column
+  60   3             {
+  61   4              rowloc=2;
+  62   4              break;
+  63   4              }
+  64   3            ROW=0xF7;     // writing "1111_0111" onto ROW
+  65   3            colloc=COL;
+  66   3            colloc&=0x0F;
+  67   3            if(colloc!=0x0F)  // if button pressed/change in column
+  68   3            {
+  69   4             rowloc=3;
+  70   4             break;
+  71   4             }
+  72   3             }
+  73   2         if(colloc==0x0E)
+  74   2         sertx( dat[rowloc][0]);
+  75   2         if(colloc==0x0D)
+  76   2         sertx(dat[rowloc][1]);
+  77   2         if(colloc==0x0B)
+  78   2         sertx(dat[rowloc][2]);
+  79   2         if(colloc==0x07)
+  80   2          sertx(dat[rowloc][3]);
+  81   2          } 
+  82   1        }
+  83          void sertx(unsigned char x)
+  84          {
+  85   1       SBUF=x;
+  86   1       while(TI==0);
+  87   1       TI=0;
+  88   1       }
+  89          void msdelay(unsigned int value)
+  90          {
+  91   1       unsigned int i,j;
+  92   1       for(j=0;j<value;j++)
+  93   1       for(i=0;i<100;i++) ;
+  94   1        }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    264    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     12       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

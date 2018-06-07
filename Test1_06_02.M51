@@ -1,0 +1,188 @@
+BL51 BANKED LINKER/LOCATER V6.05                                                        02/21/2017  04:17:53  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.05, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE keypad_test.obj TO Test1_06_02 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  keypad_test.obj (KEYPAD_TEST)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  Test1_06_02 (KEYPAD_TEST)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000CH     UNIT         ?DT?KEYPAD_TEST
+            DATA    0014H     0002H     UNIT         _DATA_GROUP_
+            IDATA   0016H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     00DDH     UNIT         ?PR?MAIN?KEYPAD_TEST
+            CODE    08DDH     008CH     UNIT         ?C_C51STARTUP
+            CODE    0969H     0020H     UNIT         ?PR?_MSDELAY?KEYPAD_TEST
+            CODE    0989H     000FH     UNIT         ?C_INITSEG
+            CODE    0998H     000BH     UNIT         ?PR?_SERTX?KEYPAD_TEST
+
+
+
+OVERLAY MAP OF MODULE:   Test1_06_02 (KEYPAD_TEST)
+
+
+SEGMENT                            DATA_GROUP 
+  +--> CALLED SEGMENT            START    LENGTH
+------------------------------------------------
+?C_C51STARTUP                    -----    -----
+  +--> ?PR?MAIN?KEYPAD_TEST
+  +--> ?C_INITSEG
+
+?PR?MAIN?KEYPAD_TEST             0014H    0002H
+  +--> ?PR?_MSDELAY?KEYPAD_TEST
+  +--> ?PR?_SERTX?KEYPAD_TEST
+
+
+
+SYMBOL TABLE OF MODULE:  Test1_06_02 (KEYPAD_TEST)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        KEYPAD_TEST
+BL51 BANKED LINKER/LOCATER V6.05                                                      02/21/2017  04:17:53  PAGE 2
+
+
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  B:0098H.1       PUBLIC        TI
+  C:0800H         PUBLIC        main
+  D:0099H         PUBLIC        SBUF
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  C:099BH         PUBLIC        _sertx
+  D:0008H         PUBLIC        dat
+  D:008DH         PUBLIC        TH1
+  B:0088H.6       PUBLIC        TR1
+  C:0969H         PUBLIC        _msdelay
+  -------         PROC          MAIN
+  -------         DO            
+  D:0014H         SYMBOL        colloc
+  D:0015H         SYMBOL        rowloc
+  -------         ENDDO         
+  C:0800H         LINE#         10
+  C:0800H         LINE#         11
+  C:0800H         LINE#         13
+  C:0803H         LINE#         14
+  C:0806H         LINE#         15
+  C:0809H         LINE#         16
+  C:080BH         LINE#         17
+  C:080EH         LINE#         18
+  C:080EH         LINE#         19
+  C:080EH         LINE#         21
+  C:080EH         LINE#         22
+  C:0811H         LINE#         23
+  C:0814H         LINE#         24
+  C:0817H         LINE#         25
+  C:081CH         LINE#         27
+  C:081CH         LINE#         29
+  C:081CH         LINE#         30
+  C:0823H         LINE#         31
+  C:0826H         LINE#         32
+  C:0829H         LINE#         33
+  C:082FH         LINE#         34
+  C:0836H         LINE#         35
+  C:0839H         LINE#         36
+  C:083CH         LINE#         37
+  C:0842H         LINE#         38
+  C:0842H         LINE#         39
+  C:0842H         LINE#         40
+  C:0845H         LINE#         41
+  C:0848H         LINE#         42
+  C:084BH         LINE#         43
+  C:0851H         LINE#         44
+  C:0851H         LINE#         45
+  C:0854H         LINE#         46
+  C:0856H         LINE#         47
+  C:0856H         LINE#         48
+  C:0859H         LINE#         49
+  C:085CH         LINE#         50
+  C:085FH         LINE#         51
+  C:0865H         LINE#         52
+BL51 BANKED LINKER/LOCATER V6.05                                                      02/21/2017  04:17:53  PAGE 3
+
+
+  C:0865H         LINE#         53
+  C:0868H         LINE#         54
+  C:086AH         LINE#         55
+  C:086AH         LINE#         56
+  C:086DH         LINE#         57
+  C:0870H         LINE#         58
+  C:0873H         LINE#         59
+  C:0879H         LINE#         60
+  C:0879H         LINE#         61
+  C:087CH         LINE#         62
+  C:087EH         LINE#         63
+  C:087EH         LINE#         64
+  C:0881H         LINE#         65
+  C:0884H         LINE#         66
+  C:0887H         LINE#         67
+  C:088DH         LINE#         68
+  C:088DH         LINE#         69
+  C:0890H         LINE#         70
+  C:0890H         LINE#         71
+  C:0890H         LINE#         72
+  C:0890H         LINE#         73
+  C:0895H         LINE#         74
+  C:08A0H         LINE#         75
+  C:08A5H         LINE#         76
+  C:08B0H         LINE#         77
+  C:08B5H         LINE#         78
+  C:08C3H         LINE#         79
+  C:08CCH         LINE#         80
+  C:08DAH         LINE#         81
+  -------         ENDPROC       MAIN
+  -------         PROC          L?0035
+  -------         ENDPROC       L?0035
+  -------         PROC          _SERTX
+  D:0007H         SYMBOL        x
+  C:099BH         LINE#         83
+  C:099BH         LINE#         84
+  C:099BH         LINE#         85
+  C:099DH         LINE#         86
+  C:09A0H         LINE#         87
+  C:09A2H         LINE#         88
+  -------         ENDPROC       _SERTX
+  -------         PROC          _MSDELAY
+  D:0006H         SYMBOL        value
+  -------         DO            
+  D:0002H         SYMBOL        i
+  D:0004H         SYMBOL        j
+  -------         ENDDO         
+  C:0969H         LINE#         89
+  C:0969H         LINE#         90
+  C:0969H         LINE#         92
+  C:0973H         LINE#         93
+  C:0988H         LINE#         94
+  -------         ENDPROC       _MSDELAY
+  -------         ENDMOD        KEYPAD_TEST
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0116H BYTE (13%) *
+BL51 BANKED LINKER/LOCATER V6.05                                                      02/21/2017  04:17:53  PAGE 4
+
+
+******************************************************************************
+
+Program Size: data=23.0 xdata=0 code=422
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

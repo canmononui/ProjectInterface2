@@ -1,0 +1,82 @@
+C51 COMPILER V8.08   SERVO_SW                                                              02/08/2017 07:03:42 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE SERVO_SW
+OBJECT MODULE PLACED IN servo_sw.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE servo_sw.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          //LDR To Servo
+   2          #include<reg51.h>
+   3          #include<stdio.h>
+   4          #include <intrins.h>
+   5          sbit sw=P3^0; // LDR Output
+   6          sbit servo=P2^0; //Servo Output
+   7          void Delay_servo(unsigned int us);
+   8          void Servo_clockwise(void);
+   9          void Servo_anticlockwise(void);
+  10          void main()
+  11          {
+  12   1        //Servo_anticlockwise();
+  13   1        servo=0;
+  14   1        while(1)
+  15   1        {
+  16   2              if(sw==1)
+  17   2              {
+  18   3                      Servo_clockwise();
+  19   3              }
+  20   2              else
+  21   2              {
+  22   3                      Servo_anticlockwise();
+  23   3              }
+  24   2        }
+  25   1      }
+  26          
+  27                  void timer(unsigned int msec)     // Function for timer
+  28                  {
+  29   1              unsigned int i;
+  30   1              for(i=0;i<msec;i++)
+  31   1              {
+  32   2              TMOD=0x20;         // Mode2
+  33   2              TH1=0xD1;
+  34   2              TL1=0xFF;
+  35   2      
+  36   2              TR1=1;
+  37   2              while(TF1==0);
+  38   2              TF1=0;
+  39   2              TR1=0;
+  40   2              }
+  41   1              }
+  42                  void Servo_clockwise(void)
+  43                  {
+  44   1              //Turn to 0 degree
+  45   1          servo = 1;
+  46   1          Delay_servo(50);
+  47   1          servo = 0;
+  48   1              }
+  49          
+  50                  void Servo_anticlockwise(void)
+  51                  {
+  52   1              //Turn to 180 degree
+  53   1          servo=1;
+  54   1          Delay_servo(110);
+  55   1          servo=0;
+C51 COMPILER V8.08   SERVO_SW                                                              02/08/2017 07:03:42 PAGE 2   
+
+  56   1              }
+  57                  
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     75    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

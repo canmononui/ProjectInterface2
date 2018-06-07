@@ -1,0 +1,4 @@
+"C:\Project Interface\STARTUP.obj",
+"C:\Project Interface\test9_4.obj" 
+TO "C:\Project Interface\test_new_boad" 
+PRINT(".\test_new_boad.m51")

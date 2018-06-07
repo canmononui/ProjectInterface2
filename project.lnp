@@ -1,0 +1,4 @@
+"C:\Project Interface\STARTUP.obj",
+"C:\Project Interface\test9_4.obj" 
+TO "C:\Project Interface\project" 
+PRINT(".\project.m51") RAMSIZE(256) 

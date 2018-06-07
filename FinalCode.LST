@@ -1,0 +1,72 @@
+C51 COMPILER V8.08   FINALCODE                                                             02/10/2017 10:53:20 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE FINALCODE
+OBJECT MODULE PLACED IN FinalCode.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE FinalCode.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          //Smart Curtain Project
+   2          //LDR Contro Motor
+   3          #include<reg51.h>
+   4          
+   5          //Set Port
+   6          sbit ldr1=P1^0;                 //Optical Sensor)
+   7          sbit ldr2=P1^1;                 //Optical Sensor)
+   8          sbit relay1=P1^2;   //Relay Switch1 Output
+   9          sbit relay2=P1^3;   //Relay Switch2     Output
+  10          
+  11          void open_curtain(void);
+  12          void close_curtain(void);
+  13          void stop_curtain(void);
+  14          void main()
+  15          {
+  16   1              while(1)
+  17   1          {
+  18   2                      if(ldr1==0 && ldr2==0) //Night (LDR LED OFF)
+  19   2                      {
+  20   3                              open_curtain();
+  21   3                      }
+  22   2                      if(ldr1==1 && ldr2==1) //Day (LDR LED ON)
+  23   2                      {
+  24   3                              close_curtain();
+  25   3                      }
+  26   2                      else //Curtain Stop
+  27   2                      {
+  28   3                          stop_curtain(); 
+  29   3                      }
+  30   2              }
+  31   1      }
+  32          
+  33          void open_curtain(void)  //motor on anticlockwise
+  34          {
+  35   1                              relay1=1;    
+  36   1                              relay2=0;       
+  37   1      }
+  38          void close_curtain(void)  //motor on clockwise
+  39          {
+  40   1                              relay1=0;
+  41   1                              relay2=1;       
+  42   1      }
+  43          void stop_curtain(void)  //motor off
+  44          {
+  45   1                              relay1=1;        //relay led off
+  46   1                              relay2=1;        //relay led off                         
+  47   1      }                
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     40    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+C51 COMPILER V8.08   FINALCODE                                                             02/10/2017 10:53:20 PAGE 2   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

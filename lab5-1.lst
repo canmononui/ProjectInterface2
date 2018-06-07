@@ -1,0 +1,250 @@
+C51 COMPILER V8.08   LAB5_1                                                                02/14/2017 11:29:33 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE LAB5_1
+OBJECT MODULE PLACED IN .\lab5-1.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE C:\Users\canmo\Desktop\lab5-1.c BROWSE DEBUG OBJECTEXTEND PRINT(.\lab5-1.ls
+                    -t) OBJECT(.\lab5-1.obj)
+
+line level    source
+
+   1          /* Include  Section */
+   2          #include <reg52.h>    
+   3            // Standard 8052 SFR : File
+   4          #include <stdio.h>    
+   5            // sprintf Function
+   6          
+   7          /* AT89C51ED2 SFR */
+   8          sfr CKCON = 0x8F;    
+   9            // Clock Control
+  10          
+  11          /* LCD Interface */
+  12          #define PORT_LCD  P0        // LCD Interface = Port P0
+  13          sbit RS = PORT_LCD^3;       // RS LCD (0=Instruction,1=Data) 
+  14          sbit RW = PORT_LCD^2;       // RW LCD (0=Write,1=Read) 
+  15          sbit E  = PORT_LCD^1;       // Enable LCD(Active = "1") 
+  16          
+  17          char lcdbuf[16+1];              // LCD Display Buffer
+  18          
+  19          /* prototype  section */
+  20          void init_lcd(void);                            // Initial Character LCD(4-Bit Interface)
+  21          void gotolcd(unsigned char);            // Set Cursor LCD
+  22          void write_ins(unsigned char);      // Write Instruction LCD
+  23          void write_data(unsigned char);     // Write Data LCD
+  24          void enable_lcd(void);                          // Enable Pulse
+  25          char busy_lcd(void);                            // Read Busy LCD Status
+  26          void printlcd(void);                            // Display Message LCD
+  27          void delay(unsigned long);              // Delay Time Function(1..4294967295)
+  28           /*--------------------------------------------
+  29          The main C function.  Program execution Here 
+  30          ---------------------------------------------*/
+  31          void main(void)
+  32          {
+  33   1        CKCON = 0x01;     // Initial X2 Mode (BUS Clock = 58.9824 MHz)  
+  34   1        init_lcd();           // Initial LCD 
+  35   1      
+  36   1        while(1)
+  37   1        {
+  38   2          gotolcd(0);                                                 // Set Cursor Line-1
+  39   2          sprintf(lcdbuf,"ET-BASE51V3(ED2)");         // Display Line-1
+  40   2          printlcd();
+  41   2          gotolcd(0x40);                                              // Set Cursor Line-2
+  42   2          sprintf(lcdbuf,"BY..ETT CO.,LTD.");         // Display Line-2
+  43   2          printlcd(); 
+  44   2          delay(150000);                                              // Display Delay
+  45   2       gotolcd(0);                                                            // Set Cursor Line-1 
+  46   2          sprintf(lcdbuf,"MCS51 High Speed");         // Display Line-1  
+  47   2          printlcd();
+  48   2          gotolcd(0x40);                                              // Set Cursor Line-2
+  49   2          sprintf(lcdbuf,"58.98MHz Execute");         // Display Line-2
+  50   2          printlcd();                 
+  51   2          delay(150000);                                              // Display Delay
+  52   2        }  
+  53   1      }
+  54          
+C51 COMPILER V8.08   LAB5_1                                                                02/14/2017 11:29:33 PAGE 2   
+
+  55          /*******************************/
+  56          /* Initial LCD 4-Bit Interface */
+  57          /*******************************/
+  58          void init_lcd(void)
+  59          {
+  60   1        unsigned int i;                                       // Delay Count
+  61   1      
+  62   1        E = 0;                                                        // Start LCD Control (Disable)
+  63   1        RS = 0;                                                       // Default Instruction 
+  64   1        RW = 0;                                                       // Default = Write Direction 
+  65   1        for (i=0;i<10000;i++);                        //Power-On Delay (15 mS)   
+  66   1           
+  67   1        PORT_LCD &= 0x0F;                             // Clear old LCD Data (Bit[7..4])
+  68   1        PORT_LCD |= 0x30;                                     // DB5:DB4 = 1:1
+  69   1        enable_lcd();                                         // Enable Pulse
+  70   1        for (i=0;i<2500;i++);                             // Delay 4.1mS
+  71   1      
+  72   1        PORT_LCD &= 0x0F;                             // Clear old LCD Data (Bit[7..4])
+  73   1        PORT_LCD |= 0x30;                                     // DB5:DB4 = 1:1
+  74   1        enable_lcd();                                         // Enable Pulse
+  75   1        for (i=0;i<100;i++);                                  // delay 100uS
+  76   1      
+  77   1        PORT_LCD &= 0x0F;                             // Clear old LCD Data (Bit[7..4])
+  78   1        PORT_LCD |= 0x30;                                     // DB5:DB4 = 1:1
+  79   1        enable_lcd();                                                 // Enable Pulse 
+  80   1        while(busy_lcd());                        // Wait LCD Execute Complete 
+  81   1      
+  82   1        PORT_LCD &= 0x0F;                             // Clear old LCD Data (Bit[7..4])
+  83   1        PORT_LCD |= 0x20;                                     // DB5:DB4 = 1:0
+  84   1        enable_lcd();                                         // Enable Pulse
+  85   1        while(busy_lcd());                            // Wait LCD Execute Complete
+  86   1        
+  87   1        write_ins(0x28);      
+  88   1       // Function Set (DL=0: 4-Bit, N=1: 2 Line, F=0:5X7) 
+  89   1        write_ins(0x0C);     
+  90   1       // Display on/off Control (D=1 Display ON, C=1Cursor OFF, B=0 Blink OFF) 
+  91   1        write_ins(0x06);     
+  92   1       // Entry Mode Set (M=1 Increment, S=0 CursorShift) 
+  93   1        write_ins(0x01);     
+  94   1       // Clear Display  (Clear Display, Set DD RAM Address=0) 
+  95   1      }
+  96          /******************/
+  97          /* Set LCD Cursor */
+  98          /******************/
+  99          void gotolcd(unsigned char i)
+ 100          {
+ 101   1        i |= 0x80;                                            // Set DD-RAM Address Command
+ 102   1        write_ins(i);  
+ 103   1      }
+ 104          
+ 105          /****************************/
+ 106          /* Write Instruction to LCD */
+ 107          /****************************/
+ 108          void write_ins(unsigned char i)
+ 109          {
+ 110   1        RS  = 0;                                              // Instruction Select
+ 111   1        RW  = 0;                                              // Write Select
+ 112   1      
+ 113   1        PORT_LCD &= 0x0F;                     // Clear old LCD Data (Bit[7..4])
+ 114   1        PORT_LCD |= i & 0xF0;                 // Strobe High Nibble Command 
+ 115   1       enable_lcd();                                          // Enable Pulse 
+ 116   1             
+C51 COMPILER V8.08   LAB5_1                                                                02/14/2017 11:29:33 PAGE 3   
+
+ 117   1        PORT_LCD &= 0x0F;                     // Clear old LCD Data (Bit[7..4])
+ 118   1        PORT_LCD |= (i << 4) & 0xF0;          // Strobe Low Nibble Command
+ 119   1        enable_lcd();                                 // Enable Pulse
+ 120   1          
+ 121   1        while(busy_lcd());                    // Wait LCD Execute Complete
+ 122   1      }
+ 123          
+ 124          /****************************/
+ 125          /* Write Data(ASCII) to LCD */
+ 126          /****************************/
+ 127          void write_data(unsigned char i)
+ 128          {
+ 129   1        RS  = 1;       
+ 130   1         // Data Select
+ 131   1        RW  = 0;     
+ 132   1         // Write Select
+ 133   1      PORT_LCD &= 0x0F;                       // Clear old LCD Data (Bit[7..4]) 
+ 134   1        PORT_LCD |= i & 0xF0;         //Strobe High Nibble Data 
+ 135   1        enable_lcd();                                 // Enable Pulse   
+ 136   1             
+ 137   1        PORT_LCD &= 0x0F;                     // Clear old LCD Data (Bit[7..4])
+ 138   1        PORT_LCD |= (i << 4) & 0xF0;  // Strobe Low Nibble Data
+ 139   1        enable_lcd();                         // Enable Pulse
+ 140   1       
+ 141   1        while(busy_lcd());            // Wait LCD Execute Complete
+ 142   1      }
+ 143          
+ 144          /***********************/
+ 145          /* Enable Pulse to LCD */
+ 146          /***********************/
+ 147          void enable_lcd(void)           // Enable Pulse
+ 148          {
+ 149   1        unsigned int i;               // Delay Count 
+ 150   1       E = 1;                                 // Enable ON 
+ 151   1        for (i=0;i<500;i++);
+ 152   1        E = 0;                                // Enable OFF 
+ 153   1      }
+ 154          
+ 155          /******************/
+ 156          /* Wait LCD Ready */
+ 157          /******************/
+ 158          char busy_lcd(void)
+ 159          {
+ 160   1        unsigned char busy_status;    // Busy Status Read
+ 161   1      
+ 162   1        RS  = 0;                                      // Instruction Select
+ 163   1        RW  = 1;                                      // Read Direction
+ 164   1        E = 1;                                        // Start Read Busy
+ 165   1        busy_status = PORT_LCD;       // Read LCD Data
+ 166   1      if(busy_status & 0x80)          //Read & Check Busy Flag 
+ 167   1        {
+ 168   2          E = 0;              // Disable Read
+ 169   2       RW = 0;                        // Default = Write Direction
+ 170   2          return 1;                   // LCD Busy Status
+ 171   2        }
+ 172   1        else
+ 173   1        {
+ 174   2          E = 0;              // Disable Read
+ 175   2       RW = 0;                        // Default = Write Direction
+ 176   2          return 0;                   // LCD Ready Status
+ 177   2        }
+ 178   1      }
+C51 COMPILER V8.08   LAB5_1                                                                02/14/2017 11:29:33 PAGE 4   
+
+ 179          
+ 180          
+ 181          /****************************/
+ 182          /* Print Data(ASCII) to LCD */
+ 183          /****************************/ 
+ 184          void printlcd(void)
+ 185          {
+ 186   1        char *p;
+ 187   1       
+ 188   1        p = lcdbuf;
+ 189   1       
+ 190   1        do                                    // Get ASCII & Write to LCD Until null 
+ 191   1        {
+ 192   2          write_data(*p);     // Write ASCII to LCD
+ 193   2          p++;                        // Next ASCII
+ 194   2        }
+ 195   1        while(*p != '\0');     // End of ASCII (null)
+ 196   1       
+ 197   1        return;
+ 198   1      }
+ 199          
+ 200          /*******************************************/
+ 201          /* Long Delay Time Function(1..4294967295) */
+ 202          /*******************************************/ 
+ 203          void delay(unsigned long i)
+ 204          {
+ 205   1        while(i > 0) {i--;}     // Loop Decrease Counter 
+ 206   1        return; 
+ 207   1        }
+ 208          
+ 209          
+ 210          
+ 211          
+ 212          
+ 213          
+ 214          
+ 215          
+ 216          
+ 217          
+ 218          
+ 219          
+ 220          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    454    ----
+   CONSTANT SIZE    =     68    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     17       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
